@@ -23,6 +23,7 @@ import {
 import { type Time } from "rosbag";
 import { useDebouncedCallback } from "use-debounce";
 
+import Joystick from "./Joystick";
 import Dimensions from "webviz-core/src/components/Dimensions";
 import { useExperimentalFeature } from "webviz-core/src/components/ExperimentalFeatures";
 import Flex from "webviz-core/src/components/Flex";
@@ -69,6 +70,7 @@ import { TOPIC_DISPLAY_MODES } from "webviz-core/src/panels/ThreeDimensionalViz/
 import useTopicTree, { TopicTreeContext } from "webviz-core/src/panels/ThreeDimensionalViz/TopicTree/useTopicTree";
 import Transforms from "webviz-core/src/panels/ThreeDimensionalViz/Transforms";
 import { useStructuralDatatypes } from "webviz-core/src/panels/ThreeDimensionalViz/utils/datatypes";
+import { pointsToPolygons } from "webviz-core/src/panels/ThreeDimensionalViz/utils/drawToolUtils";
 import type { Frame, Topic } from "webviz-core/src/players/types";
 import type { Color, OverlayIconMarker } from "webviz-core/src/types/Messages";
 import { getField } from "webviz-core/src/util/binaryObjects";
@@ -200,6 +202,17 @@ export default function Layout({
     namespaceKey: string,
     namespaceColor: ?string,
   }>();
+
+  useState(() => {
+    setPolygonBuilder(
+      new PolygonBuilder(
+        pointsToPolygons([
+          [{ x: 1.6789977653733745, y: 1.262690792623621 }],
+          [{ x: 1.0033327113550614, y: 1.749267322978435 }],
+        ])
+      )
+    );
+  }, []);
 
   const rootTf = useMemo(
     () =>
@@ -1061,6 +1074,11 @@ export default function Layout({
                 </Flex>
               )}
             </Dimensions>
+          </div>
+
+          {/* Joystick */}
+          <div style={{ position: "absolute", bottom: 40, left: 20 }}>
+            <Joystick />
           </div>
         </div>
       </TopicTreeContext.Provider>
